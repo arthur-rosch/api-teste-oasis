@@ -17,6 +17,14 @@ async function bootstrap() {
   const app: Application = express();
 
 
+  app.use(cors({
+    origin: 'https://teste-oasis.vercel.app', // Permite uma origem específica
+    methods: ['GET', 'POST', 'OPTIONS'], // Métodos HTTP permitidos
+    allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos na requisição
+    credentials: true, // Permite envio de cookies ou credenciais
+  }));
+
+
   // Criação do schema GraphQL
   const schema = await buildSchema({
     resolvers: [UserResolver, PostResolver, CommentResolver],
@@ -39,18 +47,6 @@ async function bootstrap() {
       },
     }),
   );
-
-  app.use(
-    '/graphql',
-    cors<cors.CorsRequest>({
-      allowedHeaders: "*",
-      origin: "https://teste-oasis.vercel.app",
-      methods: ['GET', 'POST', 'OPTIONS'],
-    }),
-    express.json(),
-    expressMiddleware(server),
-  );
-
 
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {
