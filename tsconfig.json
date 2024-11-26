@@ -7,7 +7,7 @@
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
     "esModuleInterop": true,
-    "outDir": "./public",
+    "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
     "skipLibCheck": false  // Altere de true para false
