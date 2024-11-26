@@ -23,11 +23,11 @@ async function bootstrap() {
     authChecker,
   });
 
-  // Configuração do Apollo Server
+  
   const server = new ApolloServer({ schema });
   await server.start();
 
-  // Middleware Apollo com contexto e JSON parser
+  
   app.use(
     '/graphql',
     express.json(),
@@ -42,16 +42,16 @@ async function bootstrap() {
 
   app.use(
     '/graphql',
-    // highlight-start
     cors<cors.CorsRequest>({
-      origin: "*",
+      allowedHeaders: "*",
+      origin: "https://teste-oasis.vercel.app",
+      methods: ['GET', 'POST', 'OPTIONS'],
     }),
-    // highlight-end
     express.json(),
     expressMiddleware(server),
   );
 
-  // Inicializa o servidor
+
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:${PORT}/graphql`);
