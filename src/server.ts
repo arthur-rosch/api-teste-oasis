@@ -11,6 +11,7 @@ import { Context } from './types/Context';
 import { verifyToken } from './utils/auth';
 import cors from 'cors'; 
 import './types/type-graphql';
+import { startServerAndCreateNextHandler } from '@as-integrations/next';
 
 dotenv.config();
 
@@ -20,7 +21,7 @@ async function bootstrap() {
   const corstOpts = {
     origin: '*',
   }
-  
+
   // @ts-ignore
   app.use(cors(corstOpts))
 
@@ -37,7 +38,9 @@ async function bootstrap() {
       const user = token ? verifyToken(token) : null;
       return { user };
     },
+    introspection: true,
   });
+
 
   await server.start();
   server.applyMiddleware({ app });
