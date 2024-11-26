@@ -1,11 +1,16 @@
 {
     "version": 2,
     "builds": [{
-        "src": "server.ts",
-        "use": "@vercel/node"
+        "src": "public/server.js",
+        "use": "@vercel/node",
+        "config": {
+            "includeFiles": [
+                "public/**"
+            ]
+        }
     }],
     "routes": [{
-        "src": "/graphql",
-        "dest": "/graphql"
+        "src": "/(.*)",
+        "dest": "public/server.js"
     }]
 }
