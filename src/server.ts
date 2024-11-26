@@ -9,12 +9,20 @@ import { CommentResolver } from './resolvers/CommentResolver';
 import { authChecker } from './utils/authChecker';
 import { Context } from './types/Context';
 import { verifyToken } from './utils/auth';
+import cors from 'cors'; 
 import './types/type-graphql';
 
 dotenv.config();
 
 async function bootstrap() {
   const app: Application = express();
+
+  const corstOpts = {
+    origin: '*',
+  }
+  
+  // @ts-ignore
+  app.use(cors(corstOpts))
 
   const schema = await buildSchema({
     resolvers: [UserResolver, PostResolver, CommentResolver],
@@ -23,9 +31,9 @@ async function bootstrap() {
 
   const server = new ApolloServer({
     schema,
-    context: ({ req }: { req: Request }): Context => { 
+    context: ({ req }): Context => {
       // @ts-ignore
-      const token = req.headers.authorization?.split(' ')[1]; 
+      const token = req.headers.authorization?.split(' ')[1];
       const user = token ? verifyToken(token) : null;
       return { user };
     },
