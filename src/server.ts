@@ -44,7 +44,9 @@ async function bootstrap() {
     '/graphql',
     // highlight-start
     cors<cors.CorsRequest>({
-      origin: "*",
+      origin: "https://teste-oasis.vercel.app",
+      methods: ['GET', 'POST'], // Métodos HTTP permitidos
+      allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
     }),
     // highlight-end
     express.json(),
