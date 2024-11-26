@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import dotenv from 'dotenv';
-import express from 'express';
+import express, { Application, Request } from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { UserResolver } from './resolvers/UserResolver';
@@ -9,12 +9,12 @@ import { CommentResolver } from './resolvers/CommentResolver';
 import { authChecker } from './utils/authChecker';
 import { Context } from './types/Context';
 import { verifyToken } from './utils/auth';
-import './types/type-graphql'
+import './types/type-graphql';
 
 dotenv.config();
 
 async function bootstrap() {
-  const app = express();
+  const app: Application = express();
 
   const schema = await buildSchema({
     resolvers: [UserResolver, PostResolver, CommentResolver],
@@ -23,14 +23,13 @@ async function bootstrap() {
 
   const server = new ApolloServer({
     schema,
-    context: ({ req }): Context => {
-      const token = req.headers.authorization?.split(' ')[1];
+    context: ({ req }: { req: Request }): Context => { 
+      // @ts-ignore
+      const token = req.headers.authorization?.split(' ')[1]; 
       const user = token ? verifyToken(token) : null;
       return { user };
     },
   });
-
-  //teste
 
   await server.start();
   server.applyMiddleware({ app });
