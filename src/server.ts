@@ -16,16 +16,6 @@ dotenv.config();
 async function bootstrap() {
   const app: Application = express();
 
-  // Configuração de CORS com ambiente dinâmico
-  const corsOptions = {
-    origin: '*',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true, // Permite envio de cookies, se necessário
-  };
-
-  // Aplica o middleware de CORS
-  app.use(cors(corsOptions));
 
   // Criação do schema GraphQL
   const schema = await buildSchema({
@@ -48,6 +38,17 @@ async function bootstrap() {
         return { user };
       },
     }),
+  );
+
+  app.use(
+    '/graphql',
+    // highlight-start
+    cors<cors.CorsRequest>({
+      origin: "*",
+    }),
+    // highlight-end
+    express.json(),
+    expressMiddleware(server),
   );
 
   // Inicializa o servidor
