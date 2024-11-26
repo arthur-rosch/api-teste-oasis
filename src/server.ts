@@ -16,26 +16,28 @@ dotenv.config();
 async function bootstrap() {
   const app: Application = express();
 
-  
-  app.use(cors({
+  // Configuração de CORS com ambiente dinâmico
+  const corsOptions = {
     origin: '*',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-  }));
+    credentials: true, // Permite envio de cookies, se necessário
+  };
 
-  
+  // Aplica o middleware de CORS
+  app.use(cors(corsOptions));
+
+  // Criação do schema GraphQL
   const schema = await buildSchema({
     resolvers: [UserResolver, PostResolver, CommentResolver],
     authChecker,
   });
 
-  
+  // Configuração do Apollo Server
   const server = new ApolloServer({ schema });
-
   await server.start();
 
-  
+  // Middleware Apollo com contexto e JSON parser
   app.use(
     '/graphql',
     express.json(),
@@ -48,10 +50,10 @@ async function bootstrap() {
     }),
   );
 
-  
+  // Inicializa o servidor
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {
-    console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+    console.log(`🚀 Server running at http://localhost:${PORT}/graphql`);
   });
 }
 

@@ -1,16 +1,25 @@
 {
-    "version": 2,
-    "builds": [{
-        "src": "public/server.js",
-        "use": "@vercel/node",
-        "config": {
-            "includeFiles": [
-                "public/**"
-            ]
-        }
-    }],
-    "routes": [{
-        "src": "/(.*)",
-        "dest": "public/server.js"
-    }]
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/server.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "src/**",
+          "node_modules/**"
+        ]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/graphql",
+      "dest": "src/server.ts"
+    },
+    {
+      "src": "/(.*)",
+      "status": 404
+    }
+  ]
 }
