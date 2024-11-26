@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import dotenv from 'dotenv';
-import express, { Application, Request } from 'express';
+import express, { Application, Request, Response } from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { UserResolver } from './resolvers/UserResolver';
@@ -11,19 +11,22 @@ import { Context } from './types/Context';
 import { verifyToken } from './utils/auth';
 import cors from 'cors'; 
 import './types/type-graphql';
-import { startServerAndCreateNextHandler } from '@as-integrations/next';
 
 dotenv.config();
 
 async function bootstrap() {
   const app: Application = express();
 
-  const corstOpts = {
-    origin: '*',
-  }
+  // Configuração do CORS
+  const corsOpts = {
+    origin: '*',  // Permite todas as origens, pode ser alterado para um domínio específico
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Métodos permitidos
+    allowedHeaders: ['Content-Type', 'Authorization'],  // Cabeçalhos permitidos
+    credentials: true,  // Permite enviar cookies e credenciais, se necessário
+  };
 
-  // @ts-ignore
-  app.use(cors(corstOpts))
+  // Aplica o CORS ao Express
+  app.use(cors(corsOpts));
 
   const schema = await buildSchema({
     resolvers: [UserResolver, PostResolver, CommentResolver],
@@ -33,16 +36,16 @@ async function bootstrap() {
   const server = new ApolloServer({
     schema,
     context: ({ req }): Context => {
-      // @ts-ignore
       const token = req.headers.authorization?.split(' ')[1];
       const user = token ? verifyToken(token) : null;
       return { user };
     },
-    introspection: true,
+    introspection: true,  // Permite introspecção em ambientes de desenvolvimento
   });
 
-
   await server.start();
+  
+  // Aplica o middleware do Apollo Server ao Express
   server.applyMiddleware({ app });
 
   const PORT = process.env.PORT || 4000;
