@@ -7,10 +7,10 @@
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
     "esModuleInterop": true,
-    "skipLibCheck": true,
     "outDir": "./public",
     "rootDir": "./src",
-    "strict": true
+    "strict": true,
+    "skipLibCheck": false  // Altere de true para false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
